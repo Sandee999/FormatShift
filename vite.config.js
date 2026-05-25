@@ -11,6 +11,7 @@ export default defineConfig({
   ],
   base: '/FormatShift/', // Using Github Pages
   server: {
+    // Because FFmpeg.wasm relies on SharedArrayBuffer
     headers: {
       'Cross-Origin-Opener-Policy': 'same-origin',
       'Cross-Origin-Embedder-Policy': 'require-corp',
