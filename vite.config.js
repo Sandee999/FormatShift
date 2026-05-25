@@ -9,6 +9,7 @@ export default defineConfig({
     tailwindcss(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  base: "/FormatShift", // Hosted on Github Pages
   server: {
     // Because FFmpeg.wasm relies on SharedArrayBuffer
     headers: {
