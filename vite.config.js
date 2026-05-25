@@ -9,6 +9,7 @@ export default defineConfig({
     tailwindcss(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  base: '/FormatShift/', // Using Github Pages
   server: {
     headers: {
       'Cross-Origin-Opener-Policy': 'same-origin',
