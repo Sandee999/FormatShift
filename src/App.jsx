@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import loadFfmpeg from './util/loadFfmpeg';
-import convertMedia from './util/convertMedia';
-import fileIcon from "./assets/icons/file.png";
-import UploadBox from './components/UploadBox';
-import FileInfo from './components/FileInfo';
-import FormatSelector from './components/FormatSelector';
-import ActionButtons from './components/ActionButtons';
+import GithubLogo from "@/assets/icons/github.png"
+import loadFfmpeg from '@/util/loadFfmpeg';
+import convert from '@/util/convert';
+import UploadBox from '@/components/UploadBox';
+import FileInfo from '@/components/FileInfo';
+import FormatSelector from '@/components/FormatSelector';
+import ActionButtons from '@/components/ActionButtons';
 
 const appName = "FormatShift";
 
@@ -23,11 +23,9 @@ function App() {
     const handleInit = async() =>{
       try {
         const ffmpeg = await loadFfmpeg();
-        
         ffmpeg.on('log', ({ message }) => console.log('[FFmpeg Log]:', message));
-        
         ffmpegRef.current = ffmpeg;
-        setIsReady(true)
+        setIsReady(true);
       } catch (error) {
         console.error("Failed to load FFmpeg:", error);
         alert("Could not initialize the media engine.");
@@ -64,19 +62,12 @@ function App() {
     setIsConverting(true);
 
     try {
-      const outputFileName = `${(file.name).replace(/\.[^/.]+$/, "") || 'converted_image'}.${targetFormat}`;
-      const result = await convertMedia(ffmpegRef.current, file, outputFileName);
-
-      const a = document.createElement('a');
-      a.href = result.url;
-      a.download = outputFileName;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      // Clean up browser memory
-      setTimeout(() => URL.revokeObjectURL(result.url), 100);
-
+      const outputFileName = `${(file.name).replace(/\.[^/.]+$/, "") || 'converted_file'}.${targetFormat}`;
+      await convert({
+        ffmpeg: ffmpegRef.current,
+        file,
+        outputFileName,
+      });
     } catch(e) {
       console.error(e);
       setFileConversionError(true)
@@ -102,10 +93,22 @@ function App() {
 
   return (
     <div className="w-screen min-h-screen flex flex-col">
-      <h1 className="w-full h-20 px-15 flex items-center text-3xl font-[Playfair_Display]">{appName}</h1>
-      <section className="px-40 py-10 flex flex-col gap-5">
-        <h3 className="flex items-center justify-center text-3xl font-[Open_Sans]">Why trust external servers with your private files?</h3>
-        <p className="px-10 text-center text-lg font-[Open_Sans]">
+      <div className="w-full h-20 px-15 flex items-center justify-between">
+        <h1 className="h-full flex items-center text-3xl font-[Playfair_Display]">{appName}</h1>
+        <div className="h-full hidden sm:flex grow-0 flex-row-reverse">
+          <a 
+            href='https://github.com/Sandee999/'
+            target='_blank'
+            className="h-full aspect-square flex items-center justify-center hover:underline"
+          >
+            <img src={GithubLogo} className="h-[50%] aspect-square" />
+            <p className="px-1 font-[Playfair_Display]">Github</p>
+          </a>
+        </div>
+      </div>
+      <section className="px-40 py-10 hidden md:flex flex-col items-center justify-center ">
+        <h3 className="pb-5 flex items-center justify-center text-3xl font-[Open_Sans]">Why trust external servers with your private files?</h3>
+        <p className="text-lg font-[Open_Sans]">
           <span className="font-[Playfair_Display]">{appName}</span> is your go-to online tool for unlimited, free multimedia conversion. 
           Because everything is processed locally on your device, you get maximum speed and absolute privacy. 
           Easily convert images, audio, and videos without size restrictions. Drop a file to streamline your content effortlessly with {appName}!
@@ -115,9 +118,9 @@ function App() {
         {(!file)?
           <UploadBox inputRef={inputRef} handleFileInput={handleFileInput} />
           :
-          <div className="w-[80%] px-8 py-5 flex items-center justify-between bg-neutral-50 rounded-3xl border border-dashed border-neutral-300">
+          <div className="w-[80%] px-8 py-5 flex items-center justify-center md:justify-between flex-wrap bg-neutral-50 rounded-3xl border border-dashed border-neutral-300">
             <FileInfo fileName={file.name} />
-            <div className="flex justify-center gap-5">
+            <div className="flex flex-wrap justify-center py-2 gap-5">
               {(!fileConversionError)?
                 <FormatSelector file={file} targetFormat={targetFormat} setTargetFormat={setTargetFormat} />
                 :

@@ -99,6 +99,8 @@ export default async function convertMedia(ffmpeg, inputFile, outputFileName) {
       url: objectURL,
     };
 
+  } catch(error){
+    throw new Error(`[${inputFileName}→${outputFileName}] ${error.message}`);
   } finally {
     // cleanup safely
     try {

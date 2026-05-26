@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import getFileExtension from "../util/getFileExtension";
-import options from "../util/options.json" with { type: "json" };
+import getFileExtension from "@/util/getFileExtension";
+import options from "@/util/options.json" with { type: "json" };
 
 export default function FormatSelector({
   file,
@@ -80,22 +80,11 @@ export default function FormatSelector({
 
       <button
         type="button"
-        onClick={() =>
-          setDropboxVisible((prev) => !prev)
-        }
+        onClick={()=>setDropboxVisible((prev)=>!prev)}
         className="px-3 py-1 min-w-28 flex justify-between items-center bg-white rounded border-2 border-neutral-200 hover:border-neutral-400"
       >
-        <span className="truncate">
-          {targetFormat || "Select"}
-        </span>
-
-        <span
-          className={`text-xs transition-transform ${
-            dropboxVisible ? "rotate-180" : ""
-          }`}
-        >
-          ▼
-        </span>
+        <span className="truncate">{targetFormat || "Select"}</span>
+        <span className={`text-xs transition-transform ${dropboxVisible ? "rotate-180" : ""}`}>▼</span>
       </button>
 
       {dropboxVisible && (
